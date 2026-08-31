@@ -79,6 +79,10 @@ def derive_top_stressors(
         "NumCompaniesWorked": lambda v: float(v) >= 4,
         "MonthlyIncome": lambda v: float(v) < 4000,
         "PercentSalaryHike": lambda v: float(v) <= 12,
+        "Income_per_JobLevel": lambda v: float(v) < 2000,
+        "Job_Hopping_Index": lambda v: float(v) >= 0.50,
+        "Satisfaction_Score": lambda v: float(v) <= 2.25,
+        "Tenure_Ratio": lambda v: float(v) <= 0.25,
     }
 
     triggered_stressors = []
@@ -109,7 +113,7 @@ def derive_top_stressors(
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 def health_check():
-    """Health check endpoint for Java Spring Boot microservice monitoring."""
+    """Health check endpoint for microservice monitoring."""
     model_loaded = "model" in model_artifacts
     return {
         "status": "UP" if model_loaded else "DEGRADED",
@@ -122,8 +126,8 @@ def health_check():
 def predict_flight_risk(payload: Dict[str, Any]):
     """
     Accepts employee behavioral and demographic metrics in JSON format,
-    preprocesses inputs using stored label encoders, and returns flight risk probability
-    along with top behavioral stressors.
+    dynamically computes feature interaction ratios, preloaded encoders,
+    and returns calibrated flight risk probabilities and top behavioral stressors.
     """
     if not model_artifacts:
         try:
@@ -158,9 +162,29 @@ def predict_flight_risk(payload: Dict[str, Any]):
                     row[feat] = float(raw_val)
                 except (ValueError, TypeError):
                     row[feat] = 0.0
-        else:
-            # Default missing features to 0
-            row[feat] = 0.0
+
+    # Dynamic Feature Engineering Ratios
+    monthly_income = float(row.get("MonthlyIncome", 0.0))
+    job_level = float(row.get("JobLevel", 1.0))
+    num_companies = float(row.get("NumCompaniesWorked", 0.0))
+    total_years = float(row.get("TotalWorkingYears", 0.0))
+    years_at_co = float(row.get("YearsAtCompany", 0.0))
+    job_sat = float(row.get("JobSatisfaction", 3.0))
+    env_sat = float(row.get("EnvironmentSatisfaction", 3.0))
+    rel_sat = float(row.get("RelationshipSatisfaction", 3.0))
+    wlb = float(row.get("WorkLifeBalance", 3.0))
+
+    row["Income_per_JobLevel"] = monthly_income / (job_level + 1.0)
+    row["Job_Hopping_Index"] = num_companies / (total_years + 1.0)
+    row["Satisfaction_Score"] = (job_sat + env_sat + rel_sat + wlb) / 4.0
+    row["Tenure_Ratio"] = years_at_co / (total_years + 1.0)
+
+    # Pass enriched input to derive_top_stressors
+    enriched_payload = dict(payload)
+    enriched_payload["Income_per_JobLevel"] = row["Income_per_JobLevel"]
+    enriched_payload["Job_Hopping_Index"] = row["Job_Hopping_Index"]
+    enriched_payload["Satisfaction_Score"] = row["Satisfaction_Score"]
+    enriched_payload["Tenure_Ratio"] = row["Tenure_Ratio"]
 
     df_input = pd.DataFrame([row], columns=feature_names)
 
@@ -168,22 +192,23 @@ def predict_flight_risk(payload: Dict[str, Any]):
     proba = float(model.predict_proba(df_input)[0][1])
     proba_rounded = round(proba, 4)
 
-    # Determine Risk Tier
-    if proba_rounded >= 0.60:
+    # Determine Risk Tier (Calibrated against dataset baseline attrition rate of 16.1%)
+    if proba_rounded >= 0.35:
         risk_tier = "HIGH"
-    elif proba_rounded >= 0.30:
+    elif proba_rounded >= 0.16:
         risk_tier = "MEDIUM"
     else:
         risk_tier = "LOW"
 
     # Derive Top Stressors
-    stressors = derive_top_stressors(payload, feature_importances, top_n=3)
+    stressors = derive_top_stressors(enriched_payload, feature_importances, top_n=3)
 
     return PredictionResponse(
         flight_risk_probability=proba_rounded,
         risk_level=risk_tier,
         top_stressors=stressors
     )
+
 
 
 if __name__ == "__main__":

@@ -53,15 +53,25 @@ def preprocess_data(
         df[col] = le.fit_transform(df[col].astype(str))
         encoders[col] = le
 
-    # 4. Save fitted LabelEncoders for API inference pipeline
+    # 4. Feature Engineering: Create domain interaction ratios
+    df["Income_per_JobLevel"] = df["MonthlyIncome"] / (df["JobLevel"] + 1)
+    df["Job_Hopping_Index"] = df["NumCompaniesWorked"] / (df["TotalWorkingYears"] + 1)
+    df["Satisfaction_Score"] = (
+        df["JobSatisfaction"] + df["EnvironmentSatisfaction"] + df["RelationshipSatisfaction"] + df["WorkLifeBalance"]
+    ) / 4.0
+    df["Tenure_Ratio"] = df["YearsAtCompany"] / (df["TotalWorkingYears"] + 1)
+    print("[Preprocessing] Added engineered features: Income_per_JobLevel, Job_Hopping_Index, Satisfaction_Score, Tenure_Ratio.")
+
+    # 5. Save fitted LabelEncoders for API inference pipeline
     os.makedirs(os.path.dirname(encoders_save_path), exist_ok=True)
     joblib.dump(encoders, encoders_save_path)
     print(f"[Preprocessing] Saved fitted LabelEncoders to '{encoders_save_path}'.")
 
-    # 5. Output State: Export processed dataset
+    # 6. Output State: Export processed dataset
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df.to_csv(output_path, index=False)
     print(f"[Preprocessing] Exported preprocessed dataset to '{output_path}'.")
+
 
     return df, encoders
 
