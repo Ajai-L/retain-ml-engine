@@ -8,14 +8,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Agent Directives & Docs
+AGENT_DIRECTIVES.md
+
 # Data and Models (Crucial for Data Science)
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-models/*.joblib
-models/*.pkl
+models/*
+!models/.gitkeep
 
 # IDE files
 .idea/
-.vscode/
+.vscode/
