@@ -2,8 +2,8 @@ import os
 import joblib
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 # Model artifact location
@@ -11,12 +11,22 @@ MODEL_PATH = "models/retain_rf_model.pkl"
 
 app = FastAPI(
     title="R.E.T.A.I.N. ML Engine Microservice",
-    description="Proactive employee attrition & flight risk evaluation API for enterprise integration.",
+    description="Proactive employee attrition & flight risk evaluation API for React frontend integration.",
     version="1.0.0"
+)
+
+# Enable CORS middleware to allow cross-origin requests from React local dev server (e.g., localhost:3000, localhost:5173)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Global variables to cache model artifacts in memory
 model_artifacts: Dict[str, Any] = {}
+
 
 
 def load_model_bundle() -> Dict[str, Any]:
