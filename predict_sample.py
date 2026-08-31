@@ -114,14 +114,50 @@ def main():
                 "StockOptionLevel": 2,
                 "TotalWorkingYears": 1,
                 "TrainingTimesLastYear": 4,
-                "WorkLifeBalance": 0,
+                "WorkLifeBalance": 1,
                 "YearsAtCompany": 1,
-                "YearsInCurrentRole": 10,
+                "YearsInCurrentRole": 1,
                 "YearsSinceLastPromotion": 2,
-                "YearsWithCurrManager": 9
+                "YearsWithCurrManager": 1
+            }
+        },
+        {
+            "name": "Employee D (100km Extreme Commute Distance, All Other Safe)",
+            "data": {
+                "Age": 40,
+                "BusinessTravel": "Non-Travel",
+                "DailyRate": 1400,
+                "Department": "Research & Development",
+                "DistanceFromHome": 100,  # Extreme 100km Commute
+                "Education": 4,
+                "EducationField": "Life Sciences",
+                "EnvironmentSatisfaction": 4,
+                "Gender": "Female",
+                "HourlyRate": 95,
+                "JobInvolvement": 4,
+                "JobLevel": 4,
+                "JobRole": "Manager",
+                "JobSatisfaction": 4,
+                "MaritalStatus": "Married",
+                "MonthlyIncome": 15000,
+                "MonthlyRate": 20000,
+                "NumCompaniesWorked": 1,
+                "OverTime": "No",
+                "PercentSalaryHike": 20,
+                "PerformanceRating": 4,
+                "RelationshipSatisfaction": 4,
+                "StockOptionLevel": 3,
+                "TotalWorkingYears": 18,
+                "TrainingTimesLastYear": 4,
+                "WorkLifeBalance": 4,
+                "YearsAtCompany": 10,
+                "YearsInCurrentRole": 8,
+                "YearsSinceLastPromotion": 1,
+                "YearsWithCurrManager": 8
             }
         }
     ]
+
 
     for item in profiles:
         print("-" * 65)
