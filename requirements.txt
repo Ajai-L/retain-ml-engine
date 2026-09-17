@@ -6,4 +6,7 @@ seaborn
 jupyter
 fastapi
 uvicorn
-joblib
+joblib
+streamlit
+plotly
+
