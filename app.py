@@ -98,25 +98,25 @@ st.markdown("""
 # Preset Profiles Definition
 # ---------------------------------------------------------
 PRESETS = {
-    "High Risk (Underpaid, Overtime & Burnout)": {
-        "Age": 29, "BusinessTravel": "Travel_Frequently", "DailyRate": 350, "Department": "Sales",
-        "DistanceFromHome": 28, "Education": 2, "EducationField": "Marketing", "EnvironmentSatisfaction": 1,
-        "Gender": "Male", "HourlyRate": 40, "JobInvolvement": 1, "JobLevel": 1, "JobRole": "Sales Executive",
-        "JobSatisfaction": 1, "MaritalStatus": "Single", "MonthlyIncome": 2700, "MonthlyRate": 14000,
-        "NumCompaniesWorked": 6, "OverTime": "Yes", "PercentSalaryHike": 11, "PerformanceRating": 3,
-        "RelationshipSatisfaction": 1, "StockOptionLevel": 0, "TotalWorkingYears": 5, "TrainingTimesLastYear": 2,
-        "WorkLifeBalance": 1, "YearsAtCompany": 1, "YearsInCurrentRole": 1, "YearsSinceLastPromotion": 1,
-        "YearsWithCurrManager": 0
+    "Chronic Overtime Burnout (1-Year Overtime & WLB 1)": {
+        "Age": 32, "BusinessTravel": "Travel_Frequently", "DailyRate": 400, "Department": "Sales",
+        "DistanceFromHome": 15, "Education": 3, "EducationField": "Marketing", "EnvironmentSatisfaction": 2,
+        "Gender": "Male", "HourlyRate": 45, "JobInvolvement": 2, "JobLevel": 1, "JobRole": "Sales Executive",
+        "JobSatisfaction": 2, "MaritalStatus": "Single", "MonthlyIncome": 3200, "MonthlyRate": 14000,
+        "NumCompaniesWorked": 4, "OverTime": "Yes", "PercentSalaryHike": 11, "PerformanceRating": 3,
+        "RelationshipSatisfaction": 2, "StockOptionLevel": 0, "TotalWorkingYears": 6, "TrainingTimesLastYear": 2,
+        "WorkLifeBalance": 1, "YearsAtCompany": 2, "YearsInCurrentRole": 2, "YearsSinceLastPromotion": 1,
+        "YearsWithCurrManager": 1
     },
-    "Safe Retention (High Pay, Engaged Manager)": {
+    "Severe Wage Deprivation ($100 - $500 Low Salary)": {
         "Age": 45, "BusinessTravel": "Non-Travel", "DailyRate": 1200, "Department": "Research & Development",
-        "DistanceFromHome": 4, "Education": 4, "EducationField": "Life Sciences", "EnvironmentSatisfaction": 4,
-        "Gender": "Female", "HourlyRate": 85, "JobInvolvement": 4, "JobLevel": 4, "JobRole": "Manager",
-        "JobSatisfaction": 4, "MaritalStatus": "Married", "MonthlyIncome": 13500, "MonthlyRate": 21000,
-        "NumCompaniesWorked": 1, "OverTime": "No", "PercentSalaryHike": 19, "PerformanceRating": 4,
-        "RelationshipSatisfaction": 4, "StockOptionLevel": 2, "TotalWorkingYears": 22, "TrainingTimesLastYear": 4,
-        "WorkLifeBalance": 4, "YearsAtCompany": 15, "YearsInCurrentRole": 10, "YearsSinceLastPromotion": 2,
-        "YearsWithCurrManager": 9
+        "DistanceFromHome": 10, "Education": 4, "EducationField": "Life Sciences", "EnvironmentSatisfaction": 3,
+        "Gender": "Female", "HourlyRate": 120, "JobInvolvement": 4, "JobLevel": 4, "JobRole": "Manager",
+        "JobSatisfaction": 4, "MaritalStatus": "Married", "MonthlyIncome": 100, "MonthlyRate": 1000,
+        "NumCompaniesWorked": 8, "OverTime": "No", "PercentSalaryHike": 18, "PerformanceRating": 4,
+        "RelationshipSatisfaction": 4, "StockOptionLevel": 2, "TotalWorkingYears": 15, "TrainingTimesLastYear": 4,
+        "WorkLifeBalance": 3, "YearsAtCompany": 8, "YearsInCurrentRole": 6, "YearsSinceLastPromotion": 2,
+        "YearsWithCurrManager": 5
     },
     "Extreme Commute Outlier (100km Distance, All Else Safe)": {
         "Age": 40, "BusinessTravel": "Non-Travel", "DailyRate": 1400, "Department": "Research & Development",
@@ -128,22 +128,22 @@ PRESETS = {
         "WorkLifeBalance": 4, "YearsAtCompany": 10, "YearsInCurrentRole": 8, "YearsSinceLastPromotion": 1,
         "YearsWithCurrManager": 8
     },
-    "Moderate Risk (Mid-Career Technical Specialist)": {
-        "Age": 36, "BusinessTravel": "Travel_Rarely", "DailyRate": 800, "Department": "Research & Development",
-        "DistanceFromHome": 12, "Education": 3, "EducationField": "Medical", "EnvironmentSatisfaction": 3,
-        "Gender": "Male", "HourlyRate": 65, "JobInvolvement": 3, "JobLevel": 2, "JobRole": "Research Scientist",
-        "JobSatisfaction": 2, "MaritalStatus": "Married", "MonthlyIncome": 5200, "MonthlyRate": 16000,
-        "NumCompaniesWorked": 3, "OverTime": "No", "PercentSalaryHike": 14, "PerformanceRating": 3,
-        "RelationshipSatisfaction": 3, "StockOptionLevel": 1, "TotalWorkingYears": 10, "TrainingTimesLastYear": 3,
-        "WorkLifeBalance": 2, "YearsAtCompany": 6, "YearsInCurrentRole": 4, "YearsSinceLastPromotion": 2,
-        "YearsWithCurrManager": 4
+    "Safe Retention (Competitive Salary & High Engagement)": {
+        "Age": 42, "BusinessTravel": "Non-Travel", "DailyRate": 1200, "Department": "Research & Development",
+        "DistanceFromHome": 5, "Education": 4, "EducationField": "Life Sciences", "EnvironmentSatisfaction": 4,
+        "Gender": "Female", "HourlyRate": 85, "JobInvolvement": 4, "JobLevel": 3, "JobRole": "Research Director",
+        "JobSatisfaction": 4, "MaritalStatus": "Married", "MonthlyIncome": 13500, "MonthlyRate": 21000,
+        "NumCompaniesWorked": 1, "OverTime": "No", "PercentSalaryHike": 19, "PerformanceRating": 4,
+        "RelationshipSatisfaction": 4, "StockOptionLevel": 2, "TotalWorkingYears": 20, "TrainingTimesLastYear": 4,
+        "WorkLifeBalance": 4, "YearsAtCompany": 12, "YearsInCurrentRole": 8, "YearsSinceLastPromotion": 2,
+        "YearsWithCurrManager": 8
     }
 }
 
 
 # Initialize Session State
 if "employee_data" not in st.session_state:
-    st.session_state.employee_data = PRESETS["High Risk (Underpaid, Overtime & Burnout)"].copy()
+    st.session_state.employee_data = PRESETS["Chronic Overtime Burnout (1-Year Overtime & WLB 1)"].copy()
 
 
 def load_preset(preset_name: str):
@@ -157,7 +157,7 @@ def get_cached_model():
 
 try:
     model_bundle = get_cached_model()
-    model_status_badge = "🟢 Model Active (Random Forest v1.0)"
+    model_status_badge = "🟢 Model Active (Random Forest v1.0 + Boundary Engine)"
 except Exception as e:
     model_status_badge = f"🔴 Model Error: {e}"
 
@@ -168,7 +168,7 @@ except Exception as e:
 col_head1, col_head2 = st.columns([3, 1])
 with col_head1:
     st.title("🛡️ R.E.T.A.I.N. — ML Engine")
-    st.caption("**Risk Evaluation Tool for Attrition Insights & Navigation** | Enterprise Flight Risk & Stressor Analytics")
+    st.caption("**Risk Evaluation Tool for Attrition Insights & Navigation** | Enterprise Flight Risk & Boundary Condition Engine")
 
 with col_head2:
     st.markdown(f"<div style='text-align: right; padding-top: 15px;'><code>{model_status_badge}</code></div>", unsafe_allow_html=True)
@@ -190,22 +190,22 @@ tab1, tab2, tab3 = st.tabs([
 # =========================================================
 with tab1:
     st.markdown("### 🎯 Interactive Employee Risk Evaluation")
-    st.write("Adjust behavioral and demographic indicators below or choose a preset to evaluate attrition probability and identify key stressors in real time.")
+    st.write("Adjust behavioral and demographic indicators below or choose a preset to evaluate attrition probability, boundary dealbreakers, and primary stressors in real time.")
 
     # Preset Profile Selector Bar
-    st.markdown("##### ⚡ Quick Preset Profiles")
+    st.markdown("##### ⚡ Quick Preset Profiles & Boundary Condition Scenarios")
     preset_cols = st.columns(4)
-    if preset_cols[0].button("🔴 High Risk Profile", use_container_width=True):
-        load_preset("High Risk (Underpaid, Overtime & Burnout)")
+    if preset_cols[0].button("🛑 1-Yr Overtime Burnout", use_container_width=True):
+        load_preset("Chronic Overtime Burnout (1-Year Overtime & WLB 1)")
         st.rerun()
-    if preset_cols[1].button("🟢 Safe Retention Profile", use_container_width=True):
-        load_preset("Safe Retention (High Pay, Engaged Manager)")
+    if preset_cols[1].button("🛑 Extreme Low Salary ($100)", use_container_width=True):
+        load_preset("Severe Wage Deprivation ($100 - $500 Low Salary)")
         st.rerun()
-    if preset_cols[2].button("⚠️ 100km Outlier Commute", use_container_width=True):
+    if preset_cols[2].button("🛑 100km Commute Infeasibility", use_container_width=True):
         load_preset("Extreme Commute Outlier (100km Distance, All Else Safe)")
         st.rerun()
-    if preset_cols[3].button("🟡 Moderate Risk Profile", use_container_width=True):
-        load_preset("Moderate Risk (Mid-Career Technical Specialist)")
+    if preset_cols[3].button("🟢 Safe Retention Profile", use_container_width=True):
+        load_preset("Safe Retention (Competitive Salary & High Engagement)")
         st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -221,7 +221,7 @@ with tab1:
             gender = d_col2.selectbox("Gender", ["Male", "Female"], index=0 if curr.get("Gender") == "Male" else 1)
             marital_status = d_col1.selectbox("Marital Status", ["Single", "Married", "Divorced"], 
                                                index=["Single", "Married", "Divorced"].index(curr.get("MaritalStatus", "Single")))
-            distance = d_col2.number_input("Distance From Home (km)", min_value=1, max_value=150, value=int(curr.get("DistanceFromHome", 10)))
+            distance = d_col2.number_input("Distance From Home (km)", min_value=1, max_value=200, value=int(curr.get("DistanceFromHome", 10)))
             
             edu_col1, edu_col2 = st.columns(2)
             education_levels = {1: "1 - Below College", 2: "2 - College", 3: "3 - Bachelor", 4: "4 - Master", 5: "5 - Doctor"}
@@ -245,11 +245,12 @@ with tab1:
             job_role = r_col2.selectbox("Job Role", roles, index=roles.index(curr.get("JobRole", "Sales Executive")) if curr.get("JobRole") in roles else 0)
             
             job_level = r_col1.selectbox("Job Level (1 to 5)", [1, 2, 3, 4, 5], index=int(curr.get("JobLevel", 1)) - 1)
-            monthly_income = r_col2.number_input("Monthly Income ($)", min_value=500, max_value=30000, value=int(curr.get("MonthlyIncome", 4000)), step=250)
+            monthly_income = r_col2.number_input("Monthly Income ($ / Rs)", min_value=50, max_value=50000, value=int(curr.get("MonthlyIncome", 4000)), step=100)
             
             c_col1, c_col2 = st.columns(2)
             salary_hike = c_col1.slider("Percent Salary Hike (%)", min_value=10, max_value=25, value=int(curr.get("PercentSalaryHike", 14)))
             stock_option = c_col2.selectbox("Stock Option Level (0-3)", [0, 1, 2, 3], index=int(curr.get("StockOptionLevel", 0)))
+
 
         with st.expander("🧠 3. Workplace Sentiment & Burnout Ratings", expanded=True):
             s_col1, s_col2 = st.columns(2)
@@ -485,15 +486,20 @@ with tab3:
 
     st.markdown("---")
     st.markdown("""
-    #### 🔍 Key Engineering Insights:
-    1. **Baseline Calibrated Risk Tiers**:
-       - IBM HR Dataset Baseline Attrition Rate = **16.1%**.
+    #### 🔍 Key Engineering & Boundary Condition Insights:
+    1. **Hard Boundary Conditions (Points-of-No-Return)**:
+       - **Extreme Commute Infeasibility ($\ge 80\text{km}$)**: Irreversible fatigue trigger; floors risk at **$\ge 92\%$ (HIGH Risk)**.
+       - **Severe Wage Deprivation ($<\$1,000 / \text{Low Wage}$)**: Severe economic unviability; floors risk at **$\ge 98\%$ (HIGH Risk)**.
+       - **Chronic Overtime Burnout ($\text{Overtime} + \text{WLB} \le 1$)**: Acute physical/mental exhaustion; floors risk at **$\ge 90\%$ (HIGH Risk)**.
+       - **Toxic Environment ($\text{EnvSat} \le 1 \ \& \ \text{JobSat} \le 1 \ \& \ \text{WLB} \le 2$)**: Complete burnout; floors risk at **$\ge 88\%$ (HIGH Risk)**.
+    2. **Coupled Cross-Feature Multipliers**:
+       - **Overtime $\times$ Long Commute ($\ge 35\text{km}$)**: Compounded exhaustion penalty (+25%).
+       - **Overtime $\times$ Low Salary ($<\$3,500$)**: Uncompensated exploitation penalty (+20%).
+       - **High Mobility $\times$ Dissatisfaction**: Rapid resignation trigger (+20%).
+    3. **Baseline Calibrated Risk Tiers**:
+       - Company Baseline Attrition Rate = **16.1%**.
        - `HIGH Risk Tier` ($\ge 35\%$): More than **2.18x** higher than company baseline.
        - `MEDIUM Risk Tier` ($16\% - 35\%$): Above company baseline.
        - `LOW Risk Tier` ($< 16\%$): Below company baseline.
-    2. **Domain Interaction Ratios**:
-       - `Income_per_JobLevel`: Catches severe underpayment for senior titles.
-       - `Job_Hopping_Index`: Differentiates normal career moves from chronic flight risks.
-    3. **Independent Stressor Penalties**:
-       - Extreme commute distances ($\ge 80\text{km}$) independently boost risk by **+55%**, ensuring safety anomalies are never missed even when all other metrics look ideal.
     """)
+

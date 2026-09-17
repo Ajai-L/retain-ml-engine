@@ -92,17 +92,21 @@ Single columns alone do not tell the full story. We introduced **4 domain intera
    - *Why*: Measures holistic workplace burnout across 4 satisfaction pillars.
 4. **`Tenure_Ratio`** = $\frac{\text{YearsAtCompany}}{\text{TotalWorkingYears} + 1}$
 
-### D. Independent Stressor & Sanity Engine
-Tree models cap out-of-distribution values at training boundaries. For instance, the maximum commute distance in the dataset was 29km. If a user inputs **100km**, a raw tree treats 100km the same as 29km.
+### D. Boundary Conditions & Point-of-No-Return Engine (PNE)
+Tree models evaluate features based on bounded statistical distributions seen in training data. However, in real-world human resources, certain extreme conditions act as **non-negotiable breaking points (Points-of-No-Return)** where no amount of positive perks can compensate for the stressor:
 
-To solve this, `src/api_gateway.py` implements an **Independent Stressor Risk & Sanity Engine**:
-1. **Payload Sanitization**: Ensures data coherence (e.g. `YearsInCurrentRole` cannot exceed `YearsAtCompany`).
-2. **Stressor Penalty Boost**: Evaluates features independently for extreme human domain anomalies:
-   - `DistanceFromHome >= 80km` $\rightarrow$ +55% Risk Boost (Guarantees `HIGH` tier).
-   - `Income_per_JobLevel < 1000` $\rightarrow$ +40% Risk Boost.
-   - `WorkLifeBalance <= 1` $\rightarrow$ +25% Risk Boost.
-3. **Probability Blending**:
-   $$\text{Final Risk Probability} = \min\left(0.99, \max(\text{Raw Model Probability}, \text{Raw Model Probability} + \text{Stressor Penalty})\right)$$
+1. **Hard Boundary Conditions (Guaranteed Dealbreakers)**:
+   - **Extreme Commute Infeasibility ($\ge 80\text{km}$)**: Physically unsustainable to commute daily over extended periods. Floors flight risk at **$\ge 92\%$ (HIGH Risk)**.
+   - **Severe Wage Deprivation ($<\$1,000 / \text{Exploitation Wage}$)**: Inability to meet basic cost of living. Floors flight risk at **$\ge 98\%$ (HIGH Risk)**.
+   - **Chronic Overtime Burnout ($\text{OverTime} = \text{Yes} \ \ \& \ \ \text{WorkLifeBalance} = 1$)**: Severe physical and mental exhaustion. Floors flight risk at **$\ge 90\%$ (HIGH Risk)**.
+   - **Toxic Environment & Total Dissatisfaction ($\text{EnvSat} \le 1, \text{JobSat} \le 1, \text{WLB} \le 2$)**: Complete loss of psychological safety. Floors flight risk at **$\ge 88\%$ (HIGH Risk)**.
+
+2. **Coupled Cross-Feature Interactions (Compounding Multipliers)**:
+   - **Overtime $\times$ Long Commute ($\ge 35\text{km}$)**: Compounded daily exhaustion (+25% penalty).
+   - **Overtime $\times$ Low Salary ($<\$3,500$)**: Uncompensated exploitation sentiment (+20% penalty).
+   - **High Mobility $\times$ Dissatisfaction**: Highly mobile employees with prior job hopping quickly leave upon encountering low satisfaction (+20% penalty).
+   - **Career Dead-End**: $\ge 7$ years without promotion in low job levels (+25% penalty).
+   - **Financial Buffer (Golden Handcuffs)**: High salary ($\ge \$12,000$) + Stock Options ($\ge 2$) provides a retention buffer (-15% discount), **provided no hard dealbreaker is breached**.
 
 ---
 
@@ -111,8 +115,9 @@ To solve this, `src/api_gateway.py` implements an **Independent Stressor Risk & 
 | Challenge | Root Cause | Solution Approach Taken |
 | :--- | :--- | :--- |
 | **1. Dataset Class Imbalance** | IBM HR dataset has 83.9% "Stayed" vs 16.1% "Attrited". Raw uncalibrated probabilities skewed low (10-30%). Hardcoded 50% thresholds misclassified 28% risk as "LOW". | **Calibrated Risk Tier Thresholds**: Re-anchored thresholds to company baseline attrition rate (16.1%):<br>• `HIGH`: $\ge 35\%$ (>2x company baseline)<br>• `MEDIUM`: $\ge 16\%$ (above company baseline)<br>• `LOW`: $< 16\%$ |
-| **2. Continuous Out-of-Distribution Outliers** | Decision trees split on thresholds up to training max (29km). Inputting `DistanceFromHome = 100km` resulted in only ~28% risk because decision trees cannot extrapolate beyond node boundaries. | **Independent Stressor Penalty Engine**: Added an independent evaluation layer that detects extreme human stressors ($\ge 80\text{km}$ commute) and applies a non-linear probability penalty boost (+55%). |
+| **2. Continuous Out-of-Distribution & Dealbreaker Scenarios** | Tree splits cap values at training max (29km, etc.). Inputting `DistanceFromHome = 100km` or `MonthlyIncome = 100` resulted in diluted probabilities because decision trees cannot extrapolate non-linear dealbreakers. | **Boundary Conditions & Point-of-No-Return Engine**: Enforces hard non-negotiable floor probabilities ($\ge 92\%-98\%$) and coupled interaction multipliers for extreme domain anomalies. |
 | **3. Incoherent / Contradictory Input Data** | Users could pass contradictory inputs (e.g. `YearsInCurrentRole = 10` when `YearsAtCompany = 1`). | **Sanitization Layer**: Created `validate_and_sanitize_payload()` to enforce logical constraints (`YearsInCurrentRole` $\le$ `YearsAtCompany` $\le$ `TotalWorkingYears`). |
+
 
 ---
 

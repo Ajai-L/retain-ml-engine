@@ -139,10 +139,13 @@ def validate_and_sanitize_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     return sanitized
 
 
-def evaluate_independent_stressor_penalties(payload: Dict[str, Any]) -> Tuple[float, List[Tuple[str, float]]]:
+def evaluate_boundary_conditions(
+    payload: Dict[str, Any], raw_proba: float
+) -> Tuple[float, List[str]]:
     """
-    Evaluates features independently to identify extreme stressor outliers and human domain anomalies.
-    Returns a risk penalty score boost and a list of triggered critical stressor flags.
+    Evaluates hard domain boundary conditions (Points-of-No-Return) and coupled cross-feature multipliers.
+    Certain extreme conditions (e.g. 100km commute, starvation wages, chronic overtime burnout)
+    act as non-negotiable flight triggers regardless of other positive factors.
     """
     try:
         distance = float(payload.get("DistanceFromHome", 0.0))
@@ -151,67 +154,86 @@ def evaluate_independent_stressor_penalties(payload: Dict[str, Any]) -> Tuple[fl
         wlb = float(payload.get("WorkLifeBalance", 3.0))
         env_sat = float(payload.get("EnvironmentSatisfaction", 3.0))
         job_sat = float(payload.get("JobSatisfaction", 3.0))
+        rel_sat = float(payload.get("RelationshipSatisfaction", 3.0))
         overtime = str(payload.get("OverTime", "")).lower() in ["yes", "1", "true"]
         num_companies = float(payload.get("NumCompaniesWorked", 0.0))
         total_years = float(payload.get("TotalWorkingYears", 0.0))
+        years_company = float(payload.get("YearsAtCompany", 0.0))
         years_no_promo = float(payload.get("YearsSinceLastPromotion", 0.0))
+        stock_options = float(payload.get("StockOptionLevel", 0.0))
     except (ValueError, TypeError):
-        return 0.0, []
+        return raw_proba, []
 
     job_hopping = num_companies / (total_years + 1.0)
     income_per_level = monthly_income / (job_level + 1.0)
+    satisfaction_avg = (job_sat + env_sat + rel_sat + wlb) / 4.0
 
-    penalty = 0.0
-    critical_flags: List[Tuple[str, float]] = []
+    dealbreakers: List[str] = []
+    compound_penalties = 0.0
+    floor_probability = 0.0
 
-    # 1. Distance From Home (Extreme Commute Stressor, e.g. 100km)
+    # =========================================================
+    # 1. HARD BOUNDARY CONDITIONS (Points-of-No-Return)
+    # =========================================================
+    
+    # A. Commute Infeasibility Boundary
     if distance >= 80:
-        penalty += 0.55
-        critical_flags.append(("DistanceFromHome (Extreme Commute Distance)", 0.99))
+        floor_probability = max(floor_probability, 0.92)
+        dealbreakers.append("Critical Commute Infeasibility (80km+ Unsustainable Daily Travel)")
     elif distance >= 50:
-        penalty += 0.35
-        critical_flags.append(("DistanceFromHome (Severe Commute Distance)", 0.85))
-    elif distance >= 30:
-        penalty += 0.20
-        critical_flags.append(("DistanceFromHome (Long Commute)", 0.70))
+        floor_probability = max(floor_probability, 0.65)
+        dealbreakers.append("Severe Commute Distance (50km+ Daily Travel)")
 
-    # 2. Extreme Salary Disparity
-    if income_per_level < 1000:
-        penalty += 0.40
-        critical_flags.append(("MonthlyIncome (Severe Role Underpayment)", 0.95))
-    elif income_per_level < 1800:
-        penalty += 0.20
-        critical_flags.append(("MonthlyIncome (Below Average Compensation)", 0.75))
+    # B. Extreme Wage Deprivation & Exploitation Boundary
+    if monthly_income < 1000:
+        floor_probability = max(floor_probability, 0.98)
+        dealbreakers.append("Severe Wage Deprivation (Substandard/Unlivable Monthly Income)")
+    elif income_per_level < 1200 and job_level >= 2:
+        floor_probability = max(floor_probability, 0.85)
+        dealbreakers.append("Extreme Role Underpayment (Senior Role on Sub-Standard Pay)")
 
-    # 3. Work-Life Balance
-    if wlb <= 1:
-        penalty += 0.25
-        critical_flags.append(("WorkLifeBalance (Severe Work-Life Imbalance)", 0.85))
+    # C. Chronic Overtime Burnout & Work-Life Breakdown
+    if overtime and wlb <= 1:
+        floor_probability = max(floor_probability, 0.90)
+        dealbreakers.append("Chronic Overtime Burnout & Severe Work-Life Imbalance")
 
-    # 4. Environment & Job Dissatisfaction
-    if env_sat <= 1:
-        penalty += 0.20
-        critical_flags.append(("EnvironmentSatisfaction (Poor Work Environment)", 0.80))
-    if job_sat <= 1:
-        penalty += 0.20
-        critical_flags.append(("JobSatisfaction (Low Job Satisfaction)", 0.80))
+    # D. Toxic Workplace Culture & Multi-Pillar Dissatisfaction
+    if env_sat <= 1 and job_sat <= 1 and wlb <= 2:
+        floor_probability = max(floor_probability, 0.88)
+        dealbreakers.append("Toxic Workplace Environment & Severe Burnout")
 
-    # 5. OverTime
-    if overtime:
-        penalty += 0.15
-        critical_flags.append(("OverTime (Mandatory Overtime Stress)", 0.75))
+    # =========================================================
+    # 2. COUPLED CROSS-FEATURE INTERACTIONS (Multipliers)
+    # =========================================================
 
-    # 6. Job Hopping Velocity
-    if job_hopping >= 0.8:
-        penalty += 0.25
-        critical_flags.append(("Job_Hopping_Index (High Historical Turnover)", 0.85))
+    # Overtime + Long Commute fatigue compounding
+    if overtime and distance >= 35:
+        compound_penalties += 0.25
+        dealbreakers.append("Compounded Overtime Fatigue with Long Daily Commute")
 
-    # 7. Promotion Stagnation
-    if years_no_promo >= 6:
-        penalty += 0.20
-        critical_flags.append(("YearsSinceLastPromotion (Career Stagnation)", 0.75))
+    # Uncompensated low-wage overtime
+    if overtime and monthly_income < 3500 and monthly_income >= 1000:
+        compound_penalties += 0.20
+        dealbreakers.append("Uncompensated Overtime with Below-Average Wage")
 
-    return penalty, critical_flags
+    # High mobility worker facing dissatisfaction
+    if job_hopping >= 0.60 and (job_sat <= 2 or env_sat <= 2):
+        compound_penalties += 0.20
+        dealbreakers.append("High Mobility Turnover Triggered by Dissatisfaction")
+
+    # Career stagnation / Dead-end role
+    if years_no_promo >= 7 and job_level <= 2 and years_company >= 6:
+        compound_penalties += 0.25
+        dealbreakers.append("Career Dead-End & Extended Promotion Stagnation")
+
+    # Retention Handcuffs Buffer (Only applies if no extreme hard dealbreaker is active)
+    if floor_probability < 0.80:
+        if monthly_income >= 12000 and stock_options >= 2 and satisfaction_avg >= 3.0:
+            compound_penalties -= 0.15
+
+    # Compute final probability combining raw model score with boundary floors and compound penalties
+    combined_proba = min(0.99, max(raw_proba + compound_penalties, floor_probability))
+    return combined_proba, dealbreakers
 
 
 @app.get("/health", status_code=status.HTTP_200_OK)
@@ -229,8 +251,8 @@ def health_check():
 def predict_flight_risk(payload: Dict[str, Any]):
     """
     Accepts employee behavioral and demographic metrics in JSON format,
-    validates data coherence, independently evaluates extreme stressor anomalies,
-    and returns calibrated flight risk probabilities and top behavioral stressors.
+    validates data coherence, evaluates non-negotiable boundary conditions and coupled interactions,
+    and returns calibrated flight risk probabilities and primary workplace stressors.
     """
     if not model_artifacts:
         try:
@@ -296,12 +318,9 @@ def predict_flight_risk(payload: Dict[str, Any]):
     # Predict raw model attrition probability
     raw_proba = float(model.predict_proba(df_input)[0][1])
 
-    # Evaluate independent extreme stressor penalties
-    stressor_penalty, critical_flags = evaluate_independent_stressor_penalties(sanitized_payload)
-
-    # Final Probability blending raw model score with independent stressor penalties
-    proba = min(0.99, max(raw_proba, raw_proba + stressor_penalty))
-    proba_rounded = round(proba, 4)
+    # Evaluate boundary conditions and coupled interaction penalties
+    final_proba, dealbreaker_stressors = evaluate_boundary_conditions(sanitized_payload, raw_proba)
+    proba_rounded = round(final_proba, 4)
 
     # Determine Risk Tier (Calibrated against dataset baseline attrition rate of 16.1%)
     if proba_rounded >= 0.35:
@@ -311,20 +330,25 @@ def predict_flight_risk(payload: Dict[str, Any]):
     else:
         risk_tier = "LOW"
 
-    # Derive Top Stressors
+    # Derive Top Stressors from feature importances and active dealbreaker conditions
     stressors = derive_top_stressors(enriched_payload, feature_importances, top_n=3)
 
-    # Prepend critical stressor flags if triggered by extreme independent values
-    for flag_desc, _ in critical_flags:
-        clean_name = flag_desc.split()[0]
-        if clean_name not in stressors:
-            stressors.insert(0, clean_name)
-    stressors = stressors[:3]
+    # Merge dealbreaker stressors at the front of the list for clear visibility
+    merged_stressors: List[str] = []
+    for d in dealbreaker_stressors:
+        if d not in merged_stressors:
+            merged_stressors.append(d)
+            
+    for s in stressors:
+        if s not in merged_stressors and len(merged_stressors) < 3:
+            merged_stressors.append(s)
+
+    final_top_stressors = merged_stressors[:3] if merged_stressors else ["Normal Workplace Variance"]
 
     return PredictionResponse(
         flight_risk_probability=proba_rounded,
         risk_level=risk_tier,
-        top_stressors=stressors
+        top_stressors=final_top_stressors
     )
 
 
