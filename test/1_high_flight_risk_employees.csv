@@ -1,0 +1,7 @@
+Age,BusinessTravel,DailyRate,Department,DistanceFromHome,Education,EducationField,EnvironmentSatisfaction,Gender,HourlyRate,JobInvolvement,JobLevel,JobRole,JobSatisfaction,MaritalStatus,MonthlyIncome,MonthlyRate,NumCompaniesWorked,OverTime,PercentSalaryHike,PerformanceRating,RelationshipSatisfaction,StockOptionLevel,TotalWorkingYears,TrainingTimesLastYear,WorkLifeBalance,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager
+28,Travel_Frequently,320,Sales,26,2,Marketing,1,Male,38,1,1,Sales Executive,1,Single,2600,14000,5,Yes,11,3,1,0,4,2,1,1,1,1,0
+24,Travel_Frequently,450,Research & Development,22,1,Life Sciences,1,Female,42,1,1,Laboratory Technician,1,Single,2300,12000,4,Yes,12,3,1,0,3,1,1,1,1,0,0
+31,Travel_Frequently,550,Sales,32,3,Marketing,2,Male,48,2,1,Sales Representative,1,Single,2800,15000,6,Yes,11,3,2,0,5,2,1,2,1,1,1
+35,Travel_Rarely,380,Human Resources,18,3,Human Resources,1,Female,52,2,1,Human Resources,1,Single,3000,13500,7,Yes,12,3,1,0,6,2,1,1,1,1,0
+29,Travel_Frequently,410,Sales,29,2,Medical,1,Male,40,1,1,Sales Executive,1,Single,2550,11000,5,Yes,11,3,1,0,4,2,1,1,1,0,0
+33,Travel_Frequently,620,Research & Development,25,3,Technical Degree,1,Male,55,1,2,Research Scientist,2,Single,3400,16000,6,Yes,12,3,1,0,7,2,1,2,2,1,1

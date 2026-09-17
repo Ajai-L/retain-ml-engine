@@ -1,0 +1,8 @@
+Age,BusinessTravel,DailyRate,Department,DistanceFromHome,Education,EducationField,EnvironmentSatisfaction,Gender,HourlyRate,JobInvolvement,JobLevel,JobRole,JobSatisfaction,MaritalStatus,MonthlyIncome,MonthlyRate,NumCompaniesWorked,OverTime,PercentSalaryHike,PerformanceRating,RelationshipSatisfaction,StockOptionLevel,TotalWorkingYears,TrainingTimesLastYear,WorkLifeBalance,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager
+30,Travel_Frequently,550,Research & Development,15,3,Life Sciences,2,Female,50,2,2,Research Scientist,2,Single,4200,14500,4,Yes,12,3,2,0,7,2,2,3,2,1,2
+48,Non-Travel,1320,Research & Development,4,4,Medical,4,Male,94,4,4,Manager,4,Married,16500,23000,1,No,19,4,4,2,26,4,4,18,12,3,11
+26,Travel_Frequently,390,Sales,22,2,Marketing,1,Male,42,1,1,Sales Representative,1,Single,2800,12000,3,Yes,11,3,1,0,3,2,1,1,1,0,0
+37,Travel_Rarely,850,Human Resources,8,3,Human Resources,3,Female,68,3,2,Human Resources,3,Married,5800,16000,2,No,15,3,3,1,10,3,3,6,4,1,4
+43,Travel_Rarely,1020,Research & Development,7,4,Technical Degree,3,Male,80,3,3,Manufacturing Director,4,Married,9200,17500,2,No,16,3,4,2,16,3,3,10,7,2,7
+29,Travel_Frequently,480,Sales,30,3,Life Sciences,1,Female,45,2,1,Sales Executive,2,Single,3100,13500,5,Yes,12,3,2,0,5,2,1,2,1,1,1
+54,Non-Travel,1400,Research & Development,2,4,Medical,4,Female,98,4,5,Research Director,4,Married,18500,25000,2,No,21,4,4,3,28,4,4,20,14,4,12

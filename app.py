@@ -485,7 +485,7 @@ with tab3:
         st.plotly_chart(fig_feat, use_container_width=True)
 
     st.markdown("---")
-    st.markdown("""
+    st.markdown(r"""
     #### 🔍 Key Engineering & Boundary Condition Insights:
     1. **Hard Boundary Conditions (Points-of-No-Return)**:
        - **Extreme Commute Infeasibility ($\ge 80\text{km}$)**: Irreversible fatigue trigger; floors risk at **$\ge 92\%$ (HIGH Risk)**.
