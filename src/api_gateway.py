@@ -273,12 +273,12 @@ def predict_flight_risk(payload: Dict[str, Any]):
     # Build feature row matching model training schema
     row = {}
     for feat in feature_names:
-        if feat in sanitized_payload:
+        if feat in sanitized_payload and not pd.isna(sanitized_payload[feat]):
             raw_val = sanitized_payload[feat]
             # Encode categorical strings if an encoder exists
             if feat in encoders:
                 le = encoders[feat]
-                raw_str = str(raw_val)
+                raw_str = str(raw_val).strip()
                 if raw_str in le.classes_:
                     row[feat] = int(le.transform([raw_str])[0])
                 else:
@@ -286,9 +286,12 @@ def predict_flight_risk(payload: Dict[str, Any]):
                     row[feat] = 0
             else:
                 try:
-                    row[feat] = float(raw_val)
+                    val_float = float(raw_val)
+                    row[feat] = 0.0 if np.isnan(val_float) else val_float
                 except (ValueError, TypeError):
                     row[feat] = 0.0
+        else:
+            row[feat] = 0.0
 
     # Dynamic Feature Engineering Ratios
     monthly_income = float(row.get("MonthlyIncome", 0.0))

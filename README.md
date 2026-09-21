@@ -48,17 +48,24 @@ retain_ml_engine/
 ├── AGENT_DIRECTIVES.md      # Project specification & execution blueprint
 ├── LEARNING_GUIDE.md        # Comprehensive technical & data science deep dive guide
 ├── README.md                # Project documentation & usage guide
+├── app.py                   # Full interactive Streamlit analytics & batch evaluation dashboard
 ├── predict_sample.py        # Terminal verification script with sample employee profiles
-├── requirements.txt         # Python dependencies (pandas, scikit-learn, fastapi, uvicorn, etc.)
+├── requirements.txt         # Python dependencies (pandas, scikit-learn, fastapi, streamlit, plotly)
 ├── data/
 │   ├── raw/                 # Raw dataset (WA_Fn-UseC_-HR-Employee-Attrition.csv)
 │   └── processed/           # Preprocessed dataset (hr_data_encoded.csv)
 ├── models/                  # Serialized model bundles & label encoders (.pkl)
+├── test/                    # 5 Specialized test CSV datasets for batch evaluation
+│   ├── 1_high_flight_risk_employees.csv
+│   ├── 2_safe_retention_employees.csv
+│   ├── 3_extreme_outliers_and_dealbreakers.csv
+│   ├── 4_department_sales_team.csv
+│   └── 5_mixed_workforce_cohort.csv
 └── src/
     ├── data_ingestion.py    # Initial dataset loader & structural inspector
     ├── data_preprocessing.py# Data cleansing, label encoding, and feature engineering pipeline
     ├── model_training.py    # Random Forest model training, evaluation, and serialization
-    └── api_gateway.py       # FastAPI microservice gateway with CORS & stressor engine
+    └── api_gateway.py       # FastAPI microservice gateway with CORS & boundary engine
 ```
 
 ---
@@ -87,6 +94,20 @@ pip install -r requirements.txt
 
 ---
 
+## 🖥️ Launching the Streamlit Web Dashboard
+
+Start the full interactive visual dashboard in your browser:
+
+```powershell
+streamlit run app.py
+```
+Open **`http://localhost:8501`** to:
+- Evaluate single employee flight risks with interactive sliders and quick-load presets.
+- Drag-and-drop batch `.csv` files from the `test/` directory for team analytics.
+- View global feature importance charts and model explainability insights.
+
+---
+
 ## 🧪 Pipeline Execution & Verification
 
 ### Step 1: Preprocess Data
@@ -112,13 +133,14 @@ python predict_sample.py
 
 ---
 
-## 🌐 Running the API Gateway Microservice
+## 🌐 Running the FastAPI Microservice Gateway
 
 Start the FastAPI backend server on `http://127.0.0.1:8000`:
 
 ```powershell
 python -m uvicorn src.api_gateway:app --port 8000 --reload
 ```
+
 
 ### API Endpoints
 
